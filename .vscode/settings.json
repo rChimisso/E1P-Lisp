@@ -1,0 +1,9 @@
+{
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"editor.tabSize": 4,
+	"files.associations": {
+		"*.lisp": "lisp"
+	},
+	"editor.rulers": [80]
+}
