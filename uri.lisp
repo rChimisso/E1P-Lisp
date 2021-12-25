@@ -56,7 +56,7 @@
 		(uri-query uri)
 		(uri-fragment uri)
 	)
-	(return-from uri-display t)
+	t
 )
 (defmethod print-object ((obj uri) stream)
 	(print-unreadable-object (obj stream :type t) (uri-display obj stream))
