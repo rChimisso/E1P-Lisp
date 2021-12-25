@@ -1,4 +1,4 @@
-(defpackage charUtils
+(defpackage utils
 	(:use :cl)
 	(:export
 		:isAllowedChar
@@ -10,7 +10,7 @@
 		:isAlnumChar
 	)
 )
-(in-package charUtils)
+(in-package utils)
 (defun isAllowedChar (char) (isAllowedCode (char-code char)))
 (defun isAllowedCode (code)
 	(and
