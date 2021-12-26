@@ -41,7 +41,7 @@
 		:reader uri-fragment
 	)
 ))
-(defun make-uri (scheme &key userinfo host (port 80) path query fragment)
+(defun make-uri (scheme &optional userinfo host (port 80) path query fragment)
 	(make-instance
 		'uri
 		:scheme scheme
@@ -80,10 +80,19 @@
 	(let
 		(
 			(scheme-machine (scheme:make-machine (coerce string 'list)))
+			; (uri-machine (uri:make-machine (scheme:leftover (scheme-machine))))
 		)
-		(scheme:parse scheme-machine)
-		(if (string/= (scheme:state scheme-machine) "error")
-			(make-uri (coerce (scheme:value scheme-machine) 'string))
+		(scheme:parse scheme-machine); uri-machine should be instantiated after this.
+		(if (string/= (scheme:state scheme-machine) "error"); Check for errors also in uri-machine.
+			(make-uri
+				(coerce (scheme:value scheme-machine) 'string)
+				;; (coerce (uri:userinfo uri-machine) 'string)
+				;; (coerce (uri:host uri-machine) 'string)
+				;; (coerce (uri:port uri-machine) 'string)
+				;; (coerce (uri:path uri-machine) 'string)
+				;; (coerce (uri:query uri-machine) 'string)
+				;; (coerce (uri:fragment uri-machine) 'string)
+			)
 			nil
 		)
 	)

@@ -28,3 +28,4 @@
 (defun isDigitChar (char) (and (digit-char-p char) (isAllowedChar char)))
 (defun isAlphaChar (char) (and (alpha-char-p char) (isAllowedChar char)))
 (defun isAlnumChar (char) (and (alphanumericp char) (isAllowedChar char)))
+; Add octets.
