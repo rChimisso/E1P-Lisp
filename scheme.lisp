@@ -1,4 +1,14 @@
-(defpackage scheme (:use :cl) (:export :get-scheme))
+(defpackage scheme
+	(:use :cl)
+	(:export
+		:machine
+		:make-machine
+		:parse
+		:value
+		:leftover
+		:state
+	)
+)
 (in-package scheme)
 (defclass machine () (
 	(value :initform nil :accessor value)
@@ -8,7 +18,9 @@
 ))
 (defun make-machine (chars) (make-instance 'machine :leftover chars))
 (defmethod move ((m machine) new-state) (setf (state m) new-state))
-(defmethod save ((m machine) value) (setf (value m) (append (value m) (list (current m)))))
+(defmethod save ((m machine) value)
+	(setf (value m) (append (value m) (list (current m))))
+)
 (defmethod consume ((m machine))
 	(setf (current m) (car (leftover m)))
 	(setf (leftover m) (cdr (leftover m)))
@@ -47,11 +59,3 @@
 		((string= (state m) "colon") t)
 	)
 )
-(defmethod accept ((m machine)) (parse m) (value m))
-(defun get-scheme (chars) (accept (make-machine chars)))
-
-; make-machine
-; parse
-; read scheme & read leftover & read state
-; if state \= "error" then continue with next machine
-; if state = "error" then return nil
