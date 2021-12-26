@@ -1,5 +1,5 @@
 (defun uri-parse (string)
-	(scheme:machine (coerce string 'list))
+	(scheme:get-scheme (coerce string 'list))
 )
 (defun uri-display (uri &optional (stream t))
 	(cond

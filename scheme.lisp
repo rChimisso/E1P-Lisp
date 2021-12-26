@@ -1,28 +1,57 @@
-(defpackage scheme
-	(:use :cl)
-	(:export
-		:machine
-	)
-)
+(defpackage scheme (:use :cl) (:export :get-scheme))
 (in-package scheme)
-(defun delta (state char)
+(defclass machine () (
+	(value :initform nil :accessor value)
+	(current :initform nil :accessor current)
+	(leftover :initarg :leftover :initform nil :accessor leftover)
+	(state :initform "empty" :accessor state)
+))
+(defun make-machine (chars) (make-instance 'machine :leftover chars))
+(defmethod move ((m machine) new-state) (setf (state m) new-state))
+(defmethod save ((m machine) value) (setf (value m) (append (value m) (list (current m)))))
+(defmethod consume ((m machine))
+	(setf (current m) (car (leftover m)))
+	(setf (leftover m) (cdr (leftover m)))
+)
+(defmethod parse ((m machine))
+	(consume m)
 	(cond
-		((and (or (string= state "empty") (string= state "scheme")) (utils:isIdentifierChar char)) "scheme")
-		(t "error")
+		(
+			(and
+				(current m)
+				(char= (current m) #\:)
+			)
+			(move m "colon")
+		)
+		(
+			(and
+				(current m)
+				(string= (state m) "empty")
+				(utils:isIdentifierChar (current m))
+			)
+			(move m "scheme")
+		)
+		(
+			(and
+				(current m)
+				(string= (state m) "scheme")
+				(utils:isIdentifierChar (current m))
+			)
+			(move m "scheme")
+		)
+		(t (move m "error"))
+	)
+	(cond
+		((string= (state m) "error") (setf (value m) nil))
+		((string/= (state m) "colon") (save m (current m)) (parse m))
+		((string= (state m) "colon") t)
 	)
 )
-(defun accept (chars state leftover)
-	(if (and (char= (car chars) #\:) (string= state "scheme")) nil)
-	(if (string/= (delta state (car chars)) "error")
-		(append (list (car chars)) (accept (cdr chars) (delta state (car chars)) leftover))
-	)
-)
-(defun machine (chars)
-	(accept chars "empty" nil)
-)
+(defmethod accept ((m machine)) (parse m) (value m))
+(defun get-scheme (chars) (accept (make-machine chars)))
 
-; Cannot handle wrong strings
-; Cannot handle leftover (remove first char everytime a char is put in value)
-; How to return leftover?
-; Does not convert value to string
-; In interface.lisp, uri:make-uri with scheme
+; make-machine
+; parse
+; read scheme & read leftover & read state
+; if state \= "error" then continue with next machine
+; if state = "error" then return nil
