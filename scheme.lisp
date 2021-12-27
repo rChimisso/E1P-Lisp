@@ -17,8 +17,15 @@
 	(state :initform "empty" :accessor state)
 ))
 (defun make-machine (chars) (make-instance 'machine :leftover chars))
+(defmethod delta ((m machine) state checker)
+	(and
+		(current m)
+		(string= (state m) state)
+		(funcall checker (current m))
+	)
+)
 (defmethod move ((m machine) new-state) (setf (state m) new-state))
-(defmethod save ((m machine) value)
+(defmethod save ((m machine))
 	(setf (value m) (append (value m) (list (current m))))
 )
 (defmethod consume ((m machine))
@@ -31,31 +38,24 @@
 		(
 			(and
 				(current m)
+				(string= (state m) "scheme")
 				(char= (current m) #\:)
 			)
 			(move m "colon")
 		)
 		(
-			(and
-				(current m)
-				(string= (state m) "empty")
-				(utils:isIdentifierChar (current m))
-			)
+			(delta m "empty" 'utils:isIdentifierChar)
 			(move m "scheme")
 		)
 		(
-			(and
-				(current m)
-				(string= (state m) "scheme")
-				(utils:isIdentifierChar (current m))
-			)
+			(delta m "scheme" 'utils:isIdentifierChar)
 			(move m "scheme")
 		)
 		(t (move m "error"))
 	)
 	(cond
-		((string= (state m) "error") (setf (value m) nil))
-		((string/= (state m) "colon") (save m (current m)) (parse m))
+		((string= (state m) "error") nil)
 		((string= (state m) "colon") t)
+		(t (save m) (parse m))
 	)
 )

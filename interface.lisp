@@ -77,21 +77,23 @@
 	(print-unreadable-object (u stream :type t) (uri-display u stream))
 )
 (defun uri-parse (string)
-	(let
-		(
-			(scheme-machine (scheme:make-machine (coerce string 'list)))
-			; (uri-machine (uri:make-machine (scheme:leftover (scheme-machine))))
-		)
-		(scheme:parse scheme-machine); uri-machine should be instantiated after this.
-		(if (string/= (scheme:state scheme-machine) "error"); Check for errors also in uri-machine.
-			(make-uri
-				(coerce (scheme:value scheme-machine) 'string)
-				;; (coerce (uri:userinfo uri-machine) 'string)
-				;; (coerce (uri:host uri-machine) 'string)
-				;; (coerce (uri:port uri-machine) 'string)
-				;; (coerce (uri:path uri-machine) 'string)
-				;; (coerce (uri:query uri-machine) 'string)
-				;; (coerce (uri:fragment uri-machine) 'string)
+	(let ((scheme-machine (scheme:make-machine (coerce string 'list))))
+		(scheme:parse scheme-machine)
+		(if (string/= (scheme:state scheme-machine) "error")
+			(let ((uri-machine (uri:make-machine (scheme:leftover scheme-machine) (coerce (scheme:value scheme-machine) 'string))))
+				(uri:parse uri-machine)
+				(if (not (uri:leftover uri-machine))
+					(make-uri
+						(uri:scheme uri-machine)
+						(uri:userinfo uri-machine)
+						(uri:host uri-machine)
+						(uri:port uri-machine)
+						;; (uri:path uri-machine)
+						;; (uri:query uri-machine)
+						;; (uri:fragment uri-machine)
+					)
+					nil
+				)
 			)
 			nil
 		)
