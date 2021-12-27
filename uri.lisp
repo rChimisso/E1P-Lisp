@@ -37,32 +37,21 @@
 		((not (leftover m)) t)
 		(
 			(string= (scheme m) "mailto")
-			(let
-				(
-					(userhost-machine (userhost:make-machine (leftover m)))
-				)
-				(userhost:parse userhost-machine)
-				(if	(and (string/= (userhost:state userhost-machine) "error") (userhost:userinfo userhost-machine) (not (userhost:leftover userhost-machine)))
-					(progn
-						(setf (host m) (userhost:host userhost-machine))
-						(setf (userinfo m) (userhost:userinfo userhost-machine))
-						(setf (leftover m) nil)
-					)
-				)
-			)
+			nil
 		)
 		(
 			(string= (scheme m) "news")
 			(let
 				(
-					(userhost-machine (userhost:make-machine (leftover m)))
+					(host-machine (host:make-machine (leftover m)))
 				)
-				(userhost:parse userhost-machine)
-				(if	(and (string/= (userhost:state userhost-machine) "error") (not (userhost:userinfo userhost-machine)) (not (userhost:leftover userhost-machine)))
+				(host:parse host-machine)
+				(if	(and (string/= (host:state host-machine) "error") (not (host:leftover host-machine)))
 					(progn
-						(setf (host m) (userhost:host userhost-machine))
+						(setf (host m) (host:value host-machine))
 						(setf (leftover m) nil)
 					)
+					(setf (leftover m) (host:leftover host-machine))
 				)
 			)
 		)
@@ -70,14 +59,15 @@
 			(or (string= (scheme m) "tel") (string= (scheme m) "fax"))
 			(let
 				(
-					(userhost-machine (userhost:make-machine (leftover m)))
+					(userinfo-machine (userinfo:make-machine (leftover m)))
 				)
-				(userhost:parse userhost-machine)
-				(if	(and (string/= (userhost:state userhost-machine) "error") (not (userhost:host userhost-machine)) (not (userhost:leftover userhost-machine)))
+				(userinfo:parse userinfo-machine)
+				(if	(and (string/= (userinfo:state userinfo-machine) "error") (not (userinfo:leftover userinfo-machine)))
 					(progn
-						(setf (userinfo m) (userhost:userinfo userhost-machine))
+						(setf (userinfo m) (userinfo:value userinfo-machine))
 						(setf (leftover m) nil)
 					)
+					(setf (leftover m) (userinfo:leftover userinfo-machine))
 				)
 			)
 		)

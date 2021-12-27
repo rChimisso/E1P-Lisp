@@ -24,7 +24,7 @@
 (defun isIdentifierChar (char) (isIdentifierCode (char-code char)))
 (defun isIdentifierCode (code) (and (isQueryCode code) (/= code 47 58 63 64)))
 (defun isHostIdentifierChar (char) (isHostIdentifierCode (char-code char)))
-(defun isHostIdentifierCode (code) (and (isQueryCode code) (/= code 46)))
+(defun isHostIdentifierCode (code) (and (isIdentifierCode code) (/= code 46)))
 (defun isDigitChar (char) (and (digit-char-p char) (isAllowedChar char)))
 (defun isAlphaChar (char) (and (alpha-char-p char) (isAllowedChar char)))
 (defun isAlnumChar (char) (and (alphanumericp char) (isAllowedChar char)))
