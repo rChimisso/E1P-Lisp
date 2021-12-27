@@ -37,7 +37,19 @@
 		((not (leftover m)) t)
 		(
 			(string= (scheme m) "mailto")
-			nil
+			(let
+				(
+					(mailto-machine (mailto:make-machine (leftover m)))
+				)
+				(mailto:parse mailto-machine)
+				(if (mailto:state mailto-machine)
+					(progn
+						(setf (host m) (mailto:host mailto-machine))
+						(setf (userinfo m) (mailto:userinfo mailto-machine))
+						(setf (leftover m) nil)
+					)
+				)
+			)
 		)
 		(
 			(string= (scheme m) "news")
@@ -46,7 +58,7 @@
 					(host-machine (host:make-machine (leftover m)))
 				)
 				(host:parse host-machine)
-				(if	(and (string/= (host:state host-machine) "error") (not (host:leftover host-machine)))
+				(if	(and (host:valid host-machine) (not (host:leftover host-machine)))
 					(progn
 						(setf (host m) (host:value host-machine))
 						(setf (leftover m) nil)
@@ -61,7 +73,7 @@
 					(userinfo-machine (userinfo:make-machine (leftover m)))
 				)
 				(userinfo:parse userinfo-machine)
-				(if	(and (string/= (userinfo:state userinfo-machine) "error") (not (userinfo:leftover userinfo-machine)))
+				(if	(and (userinfo:valid userinfo-machine) (string/= (userinfo:state userinfo-machine) "at"))
 					(progn
 						(setf (userinfo m) (userinfo:value userinfo-machine))
 						(setf (leftover m) nil)

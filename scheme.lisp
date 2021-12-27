@@ -7,6 +7,7 @@
 		:value
 		:leftover
 		:state
+		:valid
 	)
 )
 (in-package scheme)
@@ -24,6 +25,7 @@
 		(funcall checker (current m))
 	)
 )
+(defmethod valid ((m machine)) (string/= (state m) "error"))
 (defmethod move ((m machine) new-state) (setf (state m) new-state))
 (defmethod save ((m machine))
 	(setf (value m) (append (value m) (list (current m))))

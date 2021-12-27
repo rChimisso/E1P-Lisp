@@ -7,6 +7,7 @@
 		:value
 		:leftover
 		:state
+		:valid
 	)
 )
 (in-package userinfo)
@@ -20,6 +21,7 @@
 (defmethod final ((m machine))
 	(and (not (current m)) (string= (state m) "userinfo"))
 )
+(defmethod valid ((m machine)) (string/= (state m) "error"))
 (defmethod delta ((m machine) state checker)
 	(and
 		(current m)

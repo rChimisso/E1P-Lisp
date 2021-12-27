@@ -79,7 +79,7 @@
 (defun uri-parse (string)
 	(let ((scheme-machine (scheme:make-machine (coerce string 'list))))
 		(scheme:parse scheme-machine)
-		(if (string/= (scheme:state scheme-machine) "error")
+		(if (scheme:valid scheme-machine)
 			(let ((uri-machine (uri:make-machine (scheme:leftover scheme-machine) (coerce (scheme:value scheme-machine) 'string))))
 				(uri:parse uri-machine)
 				(if (not (uri:leftover uri-machine))

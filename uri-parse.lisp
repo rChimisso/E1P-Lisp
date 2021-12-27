@@ -10,6 +10,9 @@
 ; Compile and load userinfo package.
 (compile-file (merge-pathnames "userinfo.lisp" *load-truename*))
 (load (merge-pathnames "userinfo.lisp" *load-truename*))
+; Compile and load mailto package.
+(compile-file (merge-pathnames "mailto.lisp" *load-truename*))
+(load (merge-pathnames "mailto.lisp" *load-truename*))
 ; Compile and load uri package.
 (compile-file (merge-pathnames "uri.lisp" *load-truename*))
 (load (merge-pathnames "uri.lisp" *load-truename*))
