@@ -37,8 +37,6 @@
 )
 (defmethod parse ((m machine))
 	(consume m)
-	(print (current m))
-	(print (state m))
 	(cond
 		((final m) (move m "final"))
 		;; (
