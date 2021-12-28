@@ -99,6 +99,19 @@
 		)
 	)
 )
+; L'unico caso in cui si possono avere URI multipli è se c'è un leftover
+; dello scheme che NON inizia con / e lo scheme stesso NON è speciale.
+; In tal caso le macchine che permettono di controllare l'ambiguità della stringa
+; sono host:machine e mailto:machine, di cui se host:machine è valid allora lo
+; sarà anche mailto:machine, ma non è detto il contrario.
+; In generale è sempre possibile usare values per restituire il singolo make-uri,
+; però nel caso sopracitato e quando entrambe le macchine sono valid allora values
+; dovrà poter restituire 2 make-uri.
+; Conviene fare un controllo sulla presenza dello / inziale nel leftover e
+; sul tipo di scheme, per poi in caso negativo chiamare normalmente uri:machine,
+; e in caso positivo chiamare l'amb:machine che restituirà un values-list di URI
+; dove ce ne saranno 2, tramite un append interna alla macchina, solo nel caso
+; in cui entrambe le macchine sono valide.
 (defun uri-display (uri &optional (stream t))
 	(cond
 		((null uri) (princ nil) t)
