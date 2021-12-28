@@ -36,6 +36,20 @@
 		))
 	)
 )
+(defmethod setv ((m machine) &key host userinfo (port 80) path query fragment)
+	(setf
+		(values
+			(host m)
+			(userinfo m)
+			(port m)
+			(path m)
+			(query m)
+			(fragment m)
+			(valid m)
+		)
+		(values host userinfo port path query fragment t)
+	)
+)
 (defmethod parse ((m machine))
 	(cond
 		((not (leftover m)) (setf (valid m) t))
@@ -47,10 +61,7 @@
 				)
 				(host:parse host-machine)
 				(if	(and (host:valid host-machine) (not (host:leftover host-machine)))
-					(progn
-						(setf (host m) (host:value host-machine))
-						(setf (valid m) t)
-					)
+					(setv m :host (host:value host-machine))
 				)
 			)
 		)
@@ -58,14 +69,11 @@
 			(or (scheme-equal m "tel") (scheme-equal m "fax"))
 			(let
 				(
-					(userinfo-machine (userinfo:make-machine (leftover m)))
+					(user-machine (userinfo:make-machine (leftover m)))
 				)
-				(userinfo:parse userinfo-machine)
-				(if	(and (userinfo:valid userinfo-machine) (string/= (userinfo:state userinfo-machine) "at"))
-					(progn
-						(setf (userinfo m) (userinfo:value userinfo-machine))
-						(setf (valid m) t)
-					)
+				(userinfo:parse user-machine)
+				(if	(and (userinfo:valid user-machine) (string/= (userinfo:state user-machine) "at"))
+					(setv m :userinfo (userinfo:value user-machine))
 				)
 			)
 		)
@@ -74,10 +82,9 @@
 			(let ((mailto-machine (mailto:make-machine (leftover m))))
 				(mailto:parse mailto-machine)
 				(if (mailto:valid mailto-machine)
-					(progn
-						(setf (host m) (mailto:host mailto-machine))
-						(setf (userinfo m) (mailto:userinfo mailto-machine))
-						(setf (valid m) t)
+					(setv m
+						:host (mailto:host mailto-machine)
+						:userinfo (mailto:userinfo mailto-machine)
 					)
 				)
 			)
