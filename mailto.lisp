@@ -14,19 +14,21 @@
 	(setf (host:leftover host-machine) (userinfo:leftover userinfo-machine))
 	(host:parse host-machine)
 )
-(defmethod validate ((m machine) host-machine userinfo-machine)
+(defmethod validate ((m machine) h-machine u-machine)
 	(setf
 		(valid m)
 		(and
-			(host:valid host-machine)
-			(userinfo:valid userinfo-machine)
-			(not (host:leftover host-machine))
+			(host:valid h-machine)
+			(userinfo:valid u-machine)
+			(not (host:leftover h-machine))
 		)
 	)
 )
-(defmethod set-values ((m machine) host-machine userinfo-machine)
-	(setf (host m) (host:value host-machine))
-	(setf (userinfo m) (userinfo:value userinfo-machine))
+(defmethod set-values ((m machine) h-machine u-machine)
+	(setf
+		(values (host m) (userinfo m))
+		(values (host:value h-machine) (userinfo:value u-machine))
+	)
 )
 (defmethod parse ((m machine))
 	(let
