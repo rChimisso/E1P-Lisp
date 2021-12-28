@@ -76,6 +76,13 @@
 (defmethod print-object ((u uri) stream)
 	(print-unreadable-object (u stream :type t) (uri-display u stream))
 )
+(defun special-scheme-p (scheme)
+	(member
+		scheme
+		'("news" "tel" "fax" "mailto" "zos" "http" "https")
+		:test #'string-equal
+	)
+)
 (defun uri-parse (string)
 	(let ((scheme-machine (scheme:make-machine (coerce string 'list))))
 		(scheme:parse scheme-machine)

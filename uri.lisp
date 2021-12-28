@@ -54,7 +54,7 @@
 	(cond
 		((not (leftover m)) (setf (valid m) t))
 		(
-			(scheme-equal m "news")
+			(string-equal (scheme m) "news")
 			(let
 				(
 					(host-machine (host:make-machine (leftover m)))
@@ -66,7 +66,7 @@
 			)
 		)
 		(
-			(or (scheme-equal m "tel") (scheme-equal m "fax"))
+			(or (string-equal (scheme m) "tel") (string-equal (scheme m) "fax"))
 			(let
 				(
 					(user-machine (userinfo:make-machine (leftover m)))
@@ -78,7 +78,7 @@
 			)
 		)
 		(
-			(scheme-equal m "mailto")
+			(string-equal (scheme m) "mailto")
 			(let ((mailto-machine (mailto:make-machine (leftover m))))
 				(mailto:parse mailto-machine)
 				(if (mailto:valid mailto-machine)
@@ -89,11 +89,19 @@
 				)
 			)
 		)
+		(
+			(string-equal (scheme m) "zos")
+			nil ; TODO: authority - zpqf
+		)
+		(
+			t
+			nil ; TODO: authority - pqf
+		)
 	)
 	(setv m
 		:host (evaluate (host m))
 		:userinfo (evaluate (userinfo m))
-		:port (evaluate (port m))
+		:port (parse-integer (evaluate (port m)))
 		:path (evaluate (path m))
 		:query (evaluate (query m))
 		:fragment (evaluate (fragment m))
