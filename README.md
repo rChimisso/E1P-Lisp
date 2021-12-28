@@ -26,7 +26,7 @@ A successfully instantiated uri-object will also expose readers for each URI
 part, prefixed with "uri-", e.g. (uri-scheme uri-obj) to print the Scheme of
 uri-obj.
 
-- uri-display just print a uri-object into a human friendly way.
+- uri-display prints a uri-object into a human friendly way.
 An uri-object is also automatically printed using uri-display.
 #
 
