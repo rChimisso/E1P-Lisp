@@ -14,7 +14,7 @@
 (defun allowed-p (char) (allowed-code-p (char-code char)))
 (defun allowed-code-p (code)
 	(and
-		(> code 32)
+		(> code 31)
 		(< code 127)
 		(/= code 92)
 	)
@@ -43,9 +43,14 @@
 	)
 )
 (defun convert (chars)
-	(if (cdr chars)
+	(if (car chars)
 		(append (octet (car chars)) (convert (cdr chars)))
-		(octet (car chars))
+		nil
 	)
 )
-(defun evaluate (chars) (coerce (convert chars) 'string))
+(defun evaluate (chars)
+	(if chars
+		(coerce (convert chars) 'string)
+		nil
+	)
+)

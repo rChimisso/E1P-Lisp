@@ -37,10 +37,10 @@
 		(char= (current m) char)
 	)
 )
-(defmethod final ((m gen-machine))
+(defmethod final ((m gen-machine) &rest states)
 	(and
 		(not (current m))
-		(member (state m) '() :test #'string=)
+		(member (state m) states :test #'string=)
 	)
 )
 (defmethod valid ((m gen-machine)) (string/= (state m) "error"))

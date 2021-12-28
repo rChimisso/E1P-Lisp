@@ -1,87 +1,47 @@
 (defpackage host
-	(:use :cl)
-	(:export
-		:machine
-		:make-machine
-		:parse
-		:value
-		:leftover
-		:state
-		:valid
-	)
+	(:use :cl :gen-machine :utils)
+	(:export :make-machine :parse :valid :value :leftover)
 )
 (in-package host)
-(defclass machine () (
-	(value :initform nil :accessor value)
-	(current :initform nil :accessor current)
-	(leftover :initarg :leftover :initform nil :accessor leftover)
-	(state :initform "empty" :accessor state)
-))
+(defclass machine (gen-machine) ())
 (defun make-machine (chars) (make-instance 'machine :leftover chars))
-(defmethod final ((m machine))
-	(and (not (current m)) (string= (state m) "host"))
-)
-(defmethod valid ((m machine)) (string/= (state m) "error"))
-(defmethod delta ((m machine) state checker)
-	(and
-		(current m)
-		(string= (state m) state)
-		(funcall checker (current m))
-	)
-)
-(defmethod move ((m machine) new-state) (setf (state m) new-state))
-(defmethod save ((m machine))
-	(setf (value m) (append (value m) (list (current m))))
-)
-(defmethod consume ((m machine))
-	(setf (current m) (car (leftover m)))
-	(setf (leftover m) (cdr (leftover m)))
-)
 (defmethod parse ((m machine))
 	(consume m)
 	(cond
-		((final m) (move m "final"))
-		;; (
-		;; 	(and
-		;; 		(current m)
-		;; 		(string= (state m) "host")
-		;; 		(char= (current m) #\:)
-		;; 	)
-		;; 	(move m "leftover")
-		;; )
-		;; (
-		;; 	(and
-		;; 		(current m)
-		;; 		(string= (state m) "host")
-		;; 		(char= (current m) #\/)
-		;; 	)
-		;; 	(move m "leftover")
-		;; )
 		(
-			(and
-				(current m)
-				(string= (state m) "host")
-				(char= (current m) #\.)
-			)
+			(delta m "empty" 'host-ident-p)
+			(move m "host")
+		)
+		(
+			(delta m "host" 'host-ident-p)
+			(move m "host")
+		)
+		(
+			(delta-final m "host" #\.)
 			(move m "separator")
 		)
 		(
-			(delta m "separator" 'utils:isHostIdentifierChar)
+			(delta m "separator" 'host-ident-p)
 			(move m "host")
 		)
 		(
-			(delta m "empty" 'utils:isHostIdentifierChar)
-			(move m "host")
+			(delta-final m "host" #\:)
+			(move m "final-c")
 		)
 		(
-			(delta m "host" 'utils:isHostIdentifierChar)
-			(move m "host")
+			(delta-final m "host" #\/)
+			(move m "final-c")
+		)
+		(
+			(final m "host")
+			(move m "final")
 		)
 		(t (move m "error"))
 	)
 	(cond
 		((string= (state m) "error") nil)
 		((string= (state m) "final") t)
+		((string= (state m) "final-c") (unconsume m) t)
 		(t (save m) (parse m))
 	)
 )

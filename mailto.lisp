@@ -1,22 +1,33 @@
 (defpackage mailto
 	(:use :cl)
-	(:export
-		:machine
-		:make-machine
-		:parse
-		:host
-		:userinfo
-		:state
-	)
+	(:export :make-machine :parse :host :userinfo :valid)
 )
 (in-package mailto)
 (defclass machine () (
 	(host :initform nil :accessor host)
 	(userinfo :initform nil :accessor userinfo)
 	(leftover :initarg :leftover :reader leftover)
-	(state :initform t :accessor state)
+	(valid :initform t :accessor valid)
 ))
 (defun make-machine (chars) (make-instance 'machine :leftover chars))
+(defun parse-host (host-machine userinfo-machine)
+	(setf (host:leftover host-machine) (userinfo:leftover userinfo-machine))
+	(host:parse host-machine)
+)
+(defmethod validate ((m machine) host-machine userinfo-machine)
+	(setf
+		(valid m)
+		(and
+			(host:valid host-machine)
+			(userinfo:valid userinfo-machine)
+			(not (host:leftover host-machine))
+		)
+	)
+)
+(defmethod set-values ((m machine) host-machine userinfo-machine)
+	(setf (host m) (host:value host-machine))
+	(setf (userinfo m) (userinfo:value userinfo-machine))
+)
 (defmethod parse ((m machine))
 	(let
 		(
@@ -25,17 +36,9 @@
 		)
 		(userinfo:parse userinfo-machine)
 		(if (string= (userinfo:state userinfo-machine) "at")
-			(progn
-				(setf (host:leftover host-machine) (userinfo:leftover userinfo-machine))
-				(host:parse host-machine)
-			)
+			(parse-host host-machine userinfo-machine)
 		)
-		(if (and (host:valid host-machine) (userinfo:valid userinfo-machine) (not (host:leftover host-machine)))
-			(progn
-				(setf (host m) (host:value host-machine))
-				(setf (userinfo m) (userinfo:value userinfo-machine))
-			)
-			(setf (state m) nil)
-		)
+		(validate m host-machine userinfo-machine)
+		(if (valid m) (set-values m host-machine userinfo-machine))
 	)
 )

@@ -1,60 +1,26 @@
 (defpackage userinfo
-	(:use :cl)
-	(:export
-		:machine
-		:make-machine
-		:parse
-		:value
-		:leftover
-		:state
-		:valid
-	)
+	(:use :cl :gen-machine :utils)
+	(:export :make-machine :parse :valid :value :leftover :state)
 )
 (in-package userinfo)
-(defclass machine () (
-	(value :initform nil :accessor value)
-	(current :initform nil :accessor current)
-	(leftover :initarg :leftover :initform nil :accessor leftover)
-	(state :initform "empty" :accessor state)
-))
+(defclass machine (gen-machine) ())
 (defun make-machine (chars) (make-instance 'machine :leftover chars))
-(defmethod final ((m machine))
-	(and (not (current m)) (string= (state m) "userinfo"))
-)
-(defmethod valid ((m machine)) (string/= (state m) "error"))
-(defmethod delta ((m machine) state checker)
-	(and
-		(current m)
-		(string= (state m) state)
-		(funcall checker (current m))
-	)
-)
-(defmethod move ((m machine) new-state) (setf (state m) new-state))
-(defmethod save ((m machine))
-	(setf (value m) (append (value m) (list (current m))))
-)
-(defmethod consume ((m machine))
-	(setf (current m) (car (leftover m)))
-	(setf (leftover m) (cdr (leftover m)))
-)
 (defmethod parse ((m machine))
 	(consume m)
 	(cond
-		((final m) (move m "final"))
 		(
-			(and
-				(current m)
-				(string= (state m) "userinfo")
-				(char= (current m) #\@)
-			)
+			(final m "userinfo")
+			(move m "final"))
+		(
+			(delta-final m "userinfo" #\@)
 			(move m "at")
 		)
 		(
-			(delta m "empty" 'utils:isIdentifierChar)
+			(delta m "empty" 'utils:ident-p)
 			(move m "userinfo")
 		)
 		(
-			(delta m "userinfo" 'utils:isIdentifierChar)
+			(delta m "userinfo" 'utils:ident-p)
 			(move m "userinfo")
 		)
 		(t (move m "error"))

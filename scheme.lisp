@@ -1,6 +1,6 @@
 (defpackage scheme
-	(:use :cl :gen-machine)
-	(:export :make-machine :parse)
+	(:use :cl :gen-machine :utils)
+	(:export :make-machine :parse :valid :value :leftover)
 )
 (in-package scheme)
 (defclass machine (gen-machine) ())
@@ -9,11 +9,11 @@
 	(consume m)
 	(cond
 		(
-			(delta m "empty" 'utils:identifier-p)
+			(delta m "empty" 'ident-p)
 			(move m "scheme")
 		)
 		(
-			(delta m "scheme" 'utils:identifier-p)
+			(delta m "scheme" 'ident-p)
 			(move m "scheme")
 		)
 		(
