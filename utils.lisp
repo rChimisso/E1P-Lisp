@@ -1,31 +1,29 @@
 (defpackage utils
 	(:use :cl)
 	(:export
-		:isAllowedChar
-		:isQueryChar
-		:isIdentifierChar
-		:isHostIdentifierChar
-		:isDigitChar
-		:isAlphaChar
-		:isAlnumChar
+		:allowed-p
+		:query-p
+		:identifier-p
+		:host-identifier-p
+		:alpha-p
+		:alnum-p
 	)
 )
 (in-package utils)
-(defun isAllowedChar (char) (isAllowedCode (char-code char)))
-(defun isAllowedCode (code)
+(defun allowed-p (char) (allowed-code-p (char-code char)))
+(defun allowed-code-p (code)
 	(and
 		(> code 32)
 		(< code 127)
 		(/= code 34 37 60 62 92 94 96 123 124 125)
 	)
 )
-(defun isQueryChar (char) (isQueryCode (char-code char)))
-(defun isQueryCode (code) (and (isAllowedCode code) (/= code 35)))
-(defun isIdentifierChar (char) (isIdentifierCode (char-code char)))
-(defun isIdentifierCode (code) (and (isQueryCode code) (/= code 47 58 63 64)))
-(defun isHostIdentifierChar (char) (isHostIdentifierCode (char-code char)))
-(defun isHostIdentifierCode (code) (and (isIdentifierCode code) (/= code 46)))
-(defun isDigitChar (char) (and (digit-char-p char) (isAllowedChar char)))
-(defun isAlphaChar (char) (and (alpha-char-p char) (isAllowedChar char)))
-(defun isAlnumChar (char) (and (alphanumericp char) (isAllowedChar char)))
+(defun query-p (char) (query-code-p (char-code char)))
+(defun query-code-p (code) (and (allowed-code-p code) (/= code 35)))
+(defun identifier-p (char) (identifier-code-p (char-code char)))
+(defun identifier-code-p (code) (and (query-code-p code) (/= code 47 58 63 64)))
+(defun host-identifier-p (char) (host-identifier-code-p (char-code char)))
+(defun host-identifier-code-p (code) (and (identifier-code-p code) (/= code 46)))
+(defun alpha-p (char) (and (alpha-char-p char) (allowed-p char)))
+(defun alnum-p (char) (and (alphanumericp char) (allowed-p char)))
 ; Add octets.
