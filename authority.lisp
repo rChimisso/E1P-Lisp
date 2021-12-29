@@ -19,7 +19,7 @@
 	(consume m)
 	(if (> depth 0)
 		(if (and (current m) (char= (current m) #\/))
-			(authority-start-p m (1- depth))
+			(slash-start-p m (1- depth))
 		)
 		(unconsume m)
 	)
