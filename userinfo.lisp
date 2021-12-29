@@ -17,7 +17,7 @@
 			(move m "userinfo")
 		)
 		(
-			(delta-final m "userinfo" #\@)
+			(delta-final m #\@ "userinfo")
 			(move m "at")
 		)
 		(

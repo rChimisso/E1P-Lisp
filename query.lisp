@@ -17,16 +17,12 @@
 			(move m "query")
 		)
 		(
-			(delta-final m "empty" #\?)
+			(delta-final m #\? "empty")
 			(move m "question")
 		)
 		(
-			(delta-final m "empty" #\#)
-			(move m "sharp")
-		)
-		(
-			(delta-final m "query" #\#)
-			(move m "sharp")
+			(delta-final m #\# "empty" "query")
+			(move m "final*")
 		)
 		(
 			(final m "empty" "query")
@@ -37,7 +33,7 @@
 	(cond
 		((string= (state m) "error") nil)
 		((string= (state m) "final") t)
-		((string= (state m) "sharp") (unconsume m) t)
+		((string= (state m) "final*") (unconsume m) t)
 		((string= (state m) "question") (parse m))
 		(t (save m) (parse m))
 	)

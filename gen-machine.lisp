@@ -30,10 +30,10 @@
 		(funcall checker (current m))
 	)
 )
-(defmethod delta-final ((m gen-machine) state char)
+(defmethod delta-final ((m gen-machine) char &rest states)
 	(and
 		(current m)
-		(string= (state m) state)
+		(member (state m) states :test #'string=)
 		(char= (current m) char)
 	)
 )

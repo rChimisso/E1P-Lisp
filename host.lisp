@@ -21,15 +21,15 @@
 			(move m "host")
 		)
 		(
-			(delta-final m "host" #\.)
+			(delta-final m #\. "host")
 			(move m "separator")
 		)
 		(
-			(delta-final m "host" #\:)
+			(delta-final m #\: "host")
 			(move m "final*")
 		)
 		(
-			(delta-final m "host" #\/)
+			(delta-final m #\/ "host")
 			(move m "final*")
 		)
 		(

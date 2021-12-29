@@ -23,15 +23,11 @@
 			(move m "port")
 		)
 		(
-			(delta-final m "empty" #\:)
+			(delta-final m #\: "empty")
 			(move m "colon")
 		)
 		(
-			(delta-final m "empty" #\/)
-			(move m "final*")
-		)
-		(
-			(delta-final m "port" #\/)
+			(delta-final m #\/ "empty" "port")
 			(move m "final*")
 		)
 		(

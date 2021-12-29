@@ -21,27 +21,19 @@
 			(move m "path")
 		)
 		(
-			(delta-final m "empty" #\/)
+			(delta-final m #\/ "empty")
 			(move m "slash")
 		)
 		(
-			(delta-final m "path" #\/)
+			(delta-final m #\/ "path")
 			(move m "separator")
 		)
 		(
-			(delta-final m "path" #\?)
+			(delta-final m #\? "path" "slash")
 			(move m "final*")
 		)
 		(
-			(delta-final m "path" #\#)
-			(move m "final*")
-		)
-		(
-			(delta-final m "slash" #\?)
-			(move m "final*")
-		)
-		(
-			(delta-final m "slash" #\#)
+			(delta-final m #\# "path" "slash")
 			(move m "final*")
 		)
 		(

@@ -17,7 +17,7 @@
 			(move m "scheme")
 		)
 		(
-			(delta-final m "scheme" #\:)
+			(delta-final m #\: "scheme")
 			(move m "colon")
 		)
 		(t (move m "error"))

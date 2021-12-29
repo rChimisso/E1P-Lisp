@@ -17,7 +17,7 @@
 			(move m "fragment")
 		)
 		(
-			(delta-final m "empty" #\#)
+			(delta-final m #\# "empty")
 			(move m "sharp")
 		)
 		(

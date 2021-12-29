@@ -1,6 +1,6 @@
 (defpackage authority
 	(:use :cl :gen-machine)
-	(:export :make-machine :parse :host :userinfo :port :leftover :valid)
+	(:export :make-machine :parse :host :userinfo :port :leftover :valid :state :current)
 )
 (in-package authority)
 (defclass machine (gen-machine) (
@@ -64,8 +64,12 @@
 					(parse-host m (leftover m) nil)
 				)
 			)
-			(move m "error")
+			(progn
+				(print "one slash?")
+				(unconsume m)
+				(setf (leftover m) (cons #\/ (leftover m)))
+			)
 		)
-		(setf (leftover m) (cons #\/ (leftover m)))
+		(move m "error")
 	)
 )
