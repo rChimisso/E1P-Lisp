@@ -98,6 +98,9 @@
 			(let
 				(
 					(authority-machine (authority:make-machine (leftover m)))
+					(path-machine (path:make-machine nil))
+					(query-machine (query:make-machine nil))
+					(frag-machine (fragment:make-machine nil))
 				)
 				(authority:parse authority-machine)
 				(if (authority:valid authority-machine)
@@ -107,6 +110,9 @@
 						:port (authority:port authority-machine)
 					)
 				)
+				;; (path:parse path-machine)
+				;; (query:parse query-machine)
+				;; (frag:parse frag-machine)
 			)
 		)
 	)

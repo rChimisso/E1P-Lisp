@@ -28,11 +28,11 @@
 		)
 		(
 			(delta-final m "empty" #\/)
-			(move m "final")
+			(move m "final*")
 		)
 		(
 			(delta-final m "port" #\/)
-			(move m "final")
+			(move m "final*")
 		)
 		(
 			(final m "empty" "port")
@@ -43,6 +43,7 @@
 	(cond
 		((string= (state m) "error") nil)
 		((string= (state m) "final") (finalize m) t)
+		((string= (state m) "final*") (finalize m) (unconsume m) t)
 		((string= (state m) "colon") (parse m))
 		(t (save m) (parse m))
 	)
