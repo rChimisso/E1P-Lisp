@@ -37,6 +37,14 @@
 			(move m "final*")
 		)
 		(
+			(delta-final m "slash" #\?)
+			(move m "final*")
+		)
+		(
+			(delta-final m "slash" #\#)
+			(move m "final*")
+		)
+		(
 			(final m "empty" "slash" "path")
 			(move m "final")
 		)
@@ -46,6 +54,7 @@
 		((string= (state m) "error") nil)
 		((string= (state m) "final") t)
 		((string= (state m) "final*") (unconsume m) t)
+		((string= (state m) "slash") (parse m))
 		(t (save m) (parse m))
 	)
 )
