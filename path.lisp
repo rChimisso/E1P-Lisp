@@ -1,39 +1,43 @@
-(defpackage host
+(defpackage path
 	(:use :cl :gen-machine :utils)
 	(:export :make-machine :parse :valid :value :leftover)
 )
-(in-package host)
+(in-package path)
 (defclass machine (gen-machine) ())
 (defun make-machine (chars) (make-instance 'machine :leftover chars))
 (defmethod parse ((m machine))
 	(consume m)
 	(cond
 		(
-			(delta m "empty" 'host-ident-p)
-			(move m "host")
+			(delta m "slash" 'ident-p)
+			(move m "path")
 		)
 		(
-			(delta m "host" 'host-ident-p)
-			(move m "host")
+			(delta m "path" 'ident-p)
+			(move m "path")
 		)
 		(
-			(delta m "separator" 'host-ident-p)
-			(move m "host")
+			(delta m "separator" 'ident-p)
+			(move m "path")
 		)
 		(
-			(delta-final m "host" #\.)
+			(delta-final m "empty" #\/)
+			(move m "slash")
+		)
+		(
+			(delta-final m "path" #\/)
 			(move m "separator")
 		)
 		(
-			(delta-final m "host" #\:)
+			(delta-final m "path" #\?)
 			(move m "final*")
 		)
 		(
-			(delta-final m "host" #\/)
+			(delta-final m "path" #\#)
 			(move m "final*")
 		)
 		(
-			(final m "host")
+			(final m "empty" "slash" "path")
 			(move m "final")
 		)
 		(t (move m "error"))

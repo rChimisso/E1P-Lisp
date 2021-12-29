@@ -36,18 +36,18 @@
 		))
 	)
 )
-(defmethod setv ((m machine) &key host userinfo (port 80) path query fragment)
+(defmethod setv ((m machine) &key userinfo host (port (port m)) path query fragment)
 	(setf
 		(values
-			(host m)
 			(userinfo m)
+			(host m)
 			(port m)
 			(path m)
 			(query m)
 			(fragment m)
 			(valid m)
 		)
-		(values host userinfo port path query fragment t)
+		(values userinfo host port path query fragment t)
 	)
 )
 (defmethod parse ((m machine))
@@ -95,15 +95,28 @@
 		)
 		(
 			t
-			nil ; TODO: authority - pqf
+			(let
+				(
+					(authority-machine (authority:make-machine (leftover m)))
+				)
+				(authority:parse authority-machine)
+				(if (authority:valid authority-machine)
+					(setv m
+						:userinfo (authority:userinfo authority-machine)
+						:host (authority:host authority-machine)
+						:port (authority:port authority-machine)
+					)
+				)
+			)
 		)
 	)
-	(setv m
-		:host (evaluate (host m))
-		:userinfo (evaluate (userinfo m))
-		:port (parse-integer (evaluate (port m)))
-		:path (evaluate (path m))
-		:query (evaluate (query m))
-		:fragment (evaluate (fragment m))
+	(if (valid m)
+		(setv m
+			:host (evaluate (host m))
+			:userinfo (evaluate (userinfo m))
+			:path (evaluate (path m))
+			:query (evaluate (query m))
+			:fragment (evaluate (fragment m))
+		)
 	)
 )

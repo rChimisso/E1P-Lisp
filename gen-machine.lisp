@@ -53,5 +53,5 @@
 	(setf (leftover m) (cdr (leftover m)))
 )
 (defmethod unconsume ((m gen-machine))
-	(setf (leftover m) (append (list (current m)) (leftover m)))
+	(if (current m) (setf (leftover m) (cons (current m) (leftover m))))
 )
