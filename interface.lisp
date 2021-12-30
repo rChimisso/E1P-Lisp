@@ -53,6 +53,15 @@
 		:fragment fragment
 	)
 )
+(defun make-amb-uri (amb-values)
+	(make-instance
+		'uri
+		:scheme (first amb-values)
+		:userinfo (second amb-values)
+		:host (third amb-values)
+		:port 80
+	)
+)
 (defmethod display-uri ((u uri) &optional (stream t))
 	(format
 		stream
@@ -76,49 +85,50 @@
 (defmethod print-object ((u uri) stream)
 	(print-unreadable-object (u stream :type t) (uri-display u stream))
 )
-(defun special-scheme-p (scheme)
-	(member
-		scheme
-		'("news" "tel" "fax" "mailto" "zos" "http" "https")
-		:test #'string-equal
+(defun no-amb (scheme-list leftover)
+	(or
+		(member
+			(coerce scheme-list 'string)
+			'("news" "tel" "fax" "mailto" "zos" "http" "https")
+			:test #'string-equal
+		)
+		(char= (car leftover) #\/)
 	)
 )
 (defun uri-parse (string)
 	(let ((scheme-machine (scheme:make-machine (coerce string 'list))))
 		(scheme:parse scheme-machine)
 		(if (scheme:valid scheme-machine)
-			(let ((uri-machine (uri:make-machine (scheme:leftover scheme-machine) (utils:evaluate (scheme:value scheme-machine)))))
-				(uri:parse uri-machine)
-				(if (uri:valid uri-machine)
-					(make-uri
-						(uri:scheme uri-machine)
-						(uri:userinfo uri-machine)
-						(uri:host uri-machine)
-						(uri:port uri-machine)
-						(uri:path uri-machine)
-						(uri:query uri-machine)
-						(uri:fragment uri-machine)
+			(if (no-amb (scheme:value scheme-machine) (scheme:leftover scheme-machine))
+				(let ((uri-machine (uri:make-machine (scheme:leftover scheme-machine) (utils:evaluate (scheme:value scheme-machine)))))
+					(uri:parse uri-machine)
+					(if (uri:valid uri-machine)
+						(make-uri
+							(uri:scheme uri-machine)
+							(uri:userinfo uri-machine)
+							(uri:host uri-machine)
+							(uri:port uri-machine)
+							(uri:path uri-machine)
+							(uri:query uri-machine)
+							(uri:fragment uri-machine)
+						)
 					)
-					nil
+				)
+				(let ((amb-machine (amb:make-machine (scheme:leftover scheme-machine) (utils:evaluate (scheme:value scheme-machine)))))
+					(amb:parse amb-machine)
+					(if (amb:valid amb-machine)
+						(values-list
+							(map 'list
+								#'make-amb-uri
+								(amb:value amb-machine)
+							)
+						)
+					)
 				)
 			)
-			nil
 		)
 	)
 )
-; L'unico caso in cui si possono avere URI multipli è se c'è un leftover
-; dello scheme che NON inizia con / e lo scheme stesso NON è speciale.
-; In tal caso le macchine che permettono di controllare l'ambiguità della stringa
-; sono host:machine e mailto:machine, di cui se host:machine è valid allora lo
-; sarà anche mailto:machine, ma non è detto il contrario.
-; In generale è sempre possibile usare values per restituire il singolo make-uri,
-; però nel caso sopracitato e quando entrambe le macchine sono valid allora values
-; dovrà poter restituire 2 make-uri.
-; Conviene fare un controllo sulla presenza dello / inziale nel leftover e
-; sul tipo di scheme, per poi in caso negativo chiamare normalmente uri:machine,
-; e in caso positivo chiamare l'amb:machine che restituirà un values-list di URI
-; dove ce ne saranno 2, tramite un append interna alla macchina, solo nel caso
-; in cui entrambe le macchine sono valide.
 (defun uri-display (uri &optional (stream t))
 	(cond
 		((null uri) (princ nil) t)

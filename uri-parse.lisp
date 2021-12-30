@@ -34,6 +34,9 @@
 ; Compile and load authority package.
 (compile-file (merge-pathnames "authority.lisp" *load-truename*))
 (load (merge-pathnames "authority.lisp" *load-truename*))
+; Compile and load amb package.
+(compile-file (merge-pathnames "amb.lisp" *load-truename*))
+(load (merge-pathnames "amb.lisp" *load-truename*))
 ; Compile and load uri package.
 (compile-file (merge-pathnames "uri.lisp" *load-truename*))
 (load (merge-pathnames "uri.lisp" *load-truename*))
