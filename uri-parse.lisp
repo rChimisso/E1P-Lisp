@@ -19,6 +19,9 @@
 ; Compile and load path package.
 (compile-file (merge-pathnames "path.lisp" *load-truename*))
 (load (merge-pathnames "path.lisp" *load-truename*))
+; Compile and load zpath package.
+(compile-file (merge-pathnames "zpath.lisp" *load-truename*))
+(load (merge-pathnames "zpath.lisp" *load-truename*))
 ; Compile and load query package.
 (compile-file (merge-pathnames "query.lisp" *load-truename*))
 (load (merge-pathnames "query.lisp" *load-truename*))

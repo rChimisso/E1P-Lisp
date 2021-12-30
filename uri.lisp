@@ -52,7 +52,7 @@
 )
 (defun package-key (pack) (read-from-string (concatenate 'string ":" pack)))
 (defun package-call (pack symb arg) (funcall (find-symbol symb pack) arg))
-(defmethod recur-parse ((m machine) leftover packages &key authority path query fragment)
+(defmethod recur-parse ((m machine) leftover packages &key authority path zpath query fragment)
 	(if packages
 		(let
 			(
@@ -67,6 +67,7 @@
 					(package-key pack) (package-call pack "VALUE" machine)
 					:authority authority
 					:path path
+					:zpath zpath
 					:query query
 					:fragment fragment
 				)
@@ -76,7 +77,7 @@
 			:userinfo (first authority)
 			:host (second authority)
 			:port (third authority)
-			:path path
+			:path (append path zpath); At least one of these will always be nil.
 			:query query
 			:fragment fragment
 		)
@@ -123,7 +124,7 @@
 		)
 		(
 			(string-equal (scheme m) "zos")
-			nil ; TODO: authority - zpqf
+			(recur-parse m (leftover m) '("AUTHORITY" "ZPATH" "QUERY" "FRAGMENT"))
 		)
 		(
 			t
@@ -140,16 +141,3 @@
 		)
 	)
 )
-
-;;;;
-;; parse
-;; if valid
-;; set next:leftover prev:leftover
-
-;; parse
-;; if valid
-;; set next:leftover prev:leftover
-
-;; parse
-;; if valid
-;; set next:leftover prev:leftover

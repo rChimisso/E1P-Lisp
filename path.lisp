@@ -30,11 +30,11 @@
 			(move m "separator")
 		)
 		(
-			(delta-final m #\? "path" "slash")
+			(delta-final m #\? "slash" "path")
 			(move m "final*")
 		)
 		(
-			(delta-final m #\# "path" "slash")
+			(delta-final m #\# "slash" "path")
 			(move m "final*")
 		)
 		(
