@@ -65,15 +65,15 @@
 			(move m "path")
 		)
 		(
-			(delta-final m #\? "slash" "id44" "path")
+			(delta-final m #\? "id44" "path")
 			(move m "final*")
 		)
 		(
-			(delta-final m #\# "slash" "id44" "path")
+			(delta-final m #\# "id44" "path")
 			(move m "final*")
 		)
 		(
-			(final m "slash" "id44" "path")
+			(final m "empty" "id44" "path")
 			(move m "final")
 		)
 		(t (move m "error"))
