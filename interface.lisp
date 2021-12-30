@@ -117,12 +117,7 @@
 				(let ((amb-machine (amb:make-machine (scheme:leftover scheme-machine) (utils:evaluate (scheme:value scheme-machine)))))
 					(amb:parse amb-machine)
 					(if (amb:valid amb-machine)
-						(values-list
-							(map 'list
-								#'make-amb-uri
-								(amb:value amb-machine)
-							)
-						)
+						(values-list (map 'list #'make-amb-uri (amb:value amb-machine)))
 					)
 				)
 			)
