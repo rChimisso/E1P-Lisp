@@ -1,6 +1,6 @@
 (defpackage authority
 	(:use :cl :gen-machine)
-	(:export :make-machine :parse :host :userinfo :port :leftover :valid :state :current)
+	(:export :make-machine :parse :host :userinfo :port :leftover :valid)
 )
 (in-package authority)
 (defclass machine (gen-machine) (
@@ -19,8 +19,15 @@
 )
 (defmethod setv ((m machine) &key userinfo host port leftover)
 	(setf
-		(values (userinfo m) (host m) (port m) (leftover m) (state m))
-		(values userinfo host port leftover "final")
+		(values
+			(userinfo m)
+			(host m)
+			(port m)
+			(leftover m)
+			(value m)
+			(state m)
+		)
+		(values userinfo host port leftover (list userinfo host port) "final")
 	)
 )
 (defmethod parse-port ((m machine) leftover userinfo host)

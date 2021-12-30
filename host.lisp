@@ -1,5 +1,6 @@
 (defpackage host
-	(:use :cl :gen-machine :utils)
+	(:use :cl :gen-machine)
+	(:import-from :utils :host-ident-p)
 	(:export :make-machine :parse :valid :value :leftover)
 )
 (in-package host)

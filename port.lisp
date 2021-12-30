@@ -1,5 +1,5 @@
 (defpackage port
-	(:use :cl :gen-machine :utils)
+	(:use :cl :gen-machine)
 	(:export :make-machine :parse :valid :value :leftover)
 )
 (in-package port)

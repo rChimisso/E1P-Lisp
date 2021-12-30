@@ -1,5 +1,6 @@
 (defpackage userinfo
-	(:use :cl :gen-machine :utils)
+	(:use :cl :gen-machine)
+	(:import-from :utils :ident-p)
 	(:export :make-machine :parse :valid :value :leftover :state)
 )
 (in-package userinfo)
@@ -9,11 +10,11 @@
 	(consume m)
 	(cond
 		(
-			(delta m "empty" 'utils:ident-p)
+			(delta m "empty" 'ident-p)
 			(move m "userinfo")
 		)
 		(
-			(delta m "userinfo" 'utils:ident-p)
+			(delta m "userinfo" 'ident-p)
 			(move m "userinfo")
 		)
 		(

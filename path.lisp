@@ -1,5 +1,6 @@
 (defpackage path
-	(:use :cl :gen-machine :utils)
+	(:use :cl :gen-machine)
+	(:import-from :utils :ident-p)
 	(:export :make-machine :parse :valid :value :leftover)
 )
 (in-package path)

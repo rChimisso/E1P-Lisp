@@ -1,5 +1,6 @@
 (defpackage query
-	(:use :cl :gen-machine :utils)
+	(:use :cl :gen-machine)
+	(:import-from :utils :query-p)
 	(:export :make-machine :parse :valid :value :leftover)
 )
 (in-package query)

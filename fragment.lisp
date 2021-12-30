@@ -1,5 +1,6 @@
 (defpackage fragment
-	(:use :cl :gen-machine :utils)
+	(:use :cl :gen-machine)
+	(:import-from :utils :allowed-p)
 	(:export :make-machine :parse :valid :value :leftover)
 )
 (in-package fragment)

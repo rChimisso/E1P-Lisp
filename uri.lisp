@@ -35,7 +35,7 @@
 			:test #'string-equal
 		))
 	)
-)
+); REMOVE
 (defmethod setv ((m machine) &key userinfo host (port (port m)) path query fragment)
 	(setf
 		(values
@@ -48,6 +48,38 @@
 			(valid m)
 		)
 		(values userinfo host port path query fragment t)
+	)
+)
+(defun package-key (pack) (read-from-string (concatenate 'string ":" pack)))
+(defun package-call (pack symb arg) (funcall (find-symbol symb pack) arg))
+(defmethod recur-parse ((m machine) leftover packages &key authority path query fragment)
+	(if packages
+		(let
+			(
+				(pack (first packages))
+				(machine (package-call (first packages) "MAKE-MACHINE" leftover))
+			)
+			(package-call pack "PARSE" machine)
+			(if (package-call pack "VALID" machine)
+				(recur-parse m
+					(package-call pack "LEFTOVER" machine)
+					(cdr packages)
+					(package-key pack) (package-call pack "VALUE" machine)
+					:authority authority
+					:path path
+					:query query
+					:fragment fragment
+				)
+			)
+		)
+		(setv m
+			:userinfo (first authority)
+			:host (second authority)
+			:port (third authority)
+			:path path
+			:query query
+			:fragment fragment
+		)
 	)
 )
 (defmethod parse ((m machine))
@@ -95,43 +127,7 @@
 		)
 		(
 			t
-			(let
-				(
-					(authority-machine (authority:make-machine (leftover m)))
-					(path-machine (path:make-machine nil))
-					(query-machine (query:make-machine nil))
-					(frag-machine (fragment:make-machine nil))
-				)
-				(authority:parse authority-machine)
-				(if (authority:valid authority-machine)
-					(progn
-						(setf (path:leftover path-machine) (authority:leftover authority-machine))
-						(path:parse path-machine)
-						(if (path:valid path-machine)
-							(progn
-								(setf (query:leftover query-machine) (path:leftover path-machine))
-								(query:parse query-machine)
-								(if (query:valid query-machine)
-									(progn
-										(setf (fragment:leftover frag-machine) (query:leftover query-machine))
-										(fragment:parse frag-machine)
-										(if (fragment:valid frag-machine)
-											(setv m
-												:userinfo (authority:userinfo authority-machine)
-												:host (authority:host authority-machine)
-												:port (authority:port authority-machine)
-												:path (path:value path-machine)
-												:query (query:value query-machine)
-												:fragment (fragment:value frag-machine)
-											)
-										)
-									)
-								)
-							)
-						)
-					)
-				)
-			)
+			(recur-parse m (leftover m) '("AUTHORITY" "PATH" "QUERY" "FRAGMENT"))
 		)
 	)
 	(if (valid m)
@@ -144,3 +140,16 @@
 		)
 	)
 )
+
+;;;;
+;; parse
+;; if valid
+;; set next:leftover prev:leftover
+
+;; parse
+;; if valid
+;; set next:leftover prev:leftover
+
+;; parse
+;; if valid
+;; set next:leftover prev:leftover
