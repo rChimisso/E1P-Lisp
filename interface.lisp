@@ -92,6 +92,7 @@
 			'("news" "tel" "fax" "mailto" "zos" "http" "https")
 			:test #'string-equal
 		)
+		(not (car leftover))
 		(char= (car leftover) #\/)
 	)
 )
