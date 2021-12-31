@@ -44,9 +44,9 @@
 			(host-machine (host:make-machine nil))
 		)
 		(mailto:parse both-machine)
-		(if (and (mailto:valid both-machine) (not (mailto:host both-machine))); Optimization to avoid useless parsing.
+		(if (and (mailto:valid both-machine) (not (mailto:host both-machine)))
 			(parse-host m host-machine)
-			(host:parse host-machine); To force host-machine in error.
+			(host:parse host-machine)
 		)
 		(finalize m host-machine both-machine)
 	)

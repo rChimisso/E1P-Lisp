@@ -26,16 +26,6 @@
 	(scheme :initarg :scheme :reader scheme)
 ))
 (defun make-machine (chars scheme) (make-instance 'machine :leftover chars :scheme scheme))
-(defmethod scheme-equal ((m machine) scheme)
-	(or
-		(string-equal (scheme m) scheme)
-		(not (member
-			(scheme m)
-			'("news" "tel" "fax" "mailto" "zos" "http" "https")
-			:test #'string-equal
-		))
-	)
-); REMOVE
 (defmethod setv ((m machine) &key userinfo host (port (port m)) path query fragment)
 	(setf
 		(values
@@ -77,7 +67,7 @@
 			:userinfo (first authority)
 			:host (second authority)
 			:port (third authority)
-			:path (append path zpath); At least one of these will always be nil.
+			:path (append path zpath)
 			:query query
 			:fragment fragment
 		)
