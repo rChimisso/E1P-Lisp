@@ -1,19 +1,18 @@
 (defpackage gen-machine
   (:use :cl)
-  (:export
-   :gen-machine
-   :value
-   :current
-   :leftover
-   :state
-   :delta
-   :delta-final
-   :final
-   :valid
-   :move
-   :save
-   :consume
-   :unconsume))
+  (:export :gen-machine
+           :value
+           :current
+           :leftover
+           :state
+           :delta
+           :delta-final
+           :final
+           :valid
+           :move
+           :save
+           :consume
+           :unconsume))
 (in-package gen-machine)
 (defclass gen-machine ()
   ((value :initform nil :accessor value)
