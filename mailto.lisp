@@ -12,12 +12,10 @@
   (setf (host:leftover host-machine) (userinfo:leftover user-machine))
   (host:parse host-machine))
 (defmethod validate ((m machine) host-machine user-machine)
-  (setf
-   (valid m)
-   (and
-    (host:valid host-machine)
-    (userinfo:valid user-machine)
-    (not (host:leftover host-machine)))))
+  (setf (valid m)
+        (and (host:valid host-machine)
+             (userinfo:valid user-machine)
+             (not (host:leftover host-machine)))))
 (defmethod setv ((m machine) &key host userinfo)
   (setf (values (host m) (userinfo m)) (values host userinfo)))
 (defmethod parse ((m machine))

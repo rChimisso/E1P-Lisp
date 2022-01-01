@@ -11,11 +11,9 @@
 (defun make-machine (chars scheme)
   (make-instance 'machine :leftover chars :scheme scheme))
 (defmethod save ((m machine) &key userinfo host)
-  (setf
-   (value m)
-   (append
-    (value m)
-    (list (list (scheme m) (evaluate userinfo) (evaluate host)))))
+  (setf (value m)
+        (append (value m)
+                (list (list (scheme m) (evaluate userinfo) (evaluate host)))))
   (setf (valid m) t))
 (defmethod save-host ((m machine) host-machine)
   (if (host:valid host-machine) (save m :host (host:value host-machine))))

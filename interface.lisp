@@ -34,50 +34,45 @@
     :writer fragment
     :reader uri-fragment)))
 (defun make-uri (scheme &optional userinfo host (port 80) path query fragment)
-  (make-instance
-   'uri
-   :scheme scheme
-   :userinfo userinfo
-   :host host
-   :port port
-   :path path
-   :query query
-   :fragment fragment))
+  (make-instance 'uri
+                 :scheme scheme
+                 :userinfo userinfo
+                 :host host
+                 :port port
+                 :path path
+                 :query query
+                 :fragment fragment))
 (defun make-amb-uri (amb-values)
-  (make-instance
-   'uri
-   :scheme (first amb-values)
-   :userinfo (second amb-values)
-   :host (third amb-values)
-   :port 80))
+  (make-instance 'uri
+                 :scheme (first amb-values)
+                 :userinfo (second amb-values)
+                 :host (third amb-values)
+                 :port 80))
 (defmethod display-uri ((u uri) &optional (stream t))
-  (format
-   stream
-   "~&Scheme: ~a~@
-   Userinfo: ~a~@
-   Host: ~a~@
-   Port: ~d~@
-   Path: ~a~@
-   Query: ~a~@
-   Fragment: ~a~%"
-   (uri-scheme u)
-   (uri-userinfo u)
-   (uri-host u)
-   (uri-port u)
-   (uri-path u)
-   (uri-query u)
-   (uri-fragment u))
+  (format stream
+          "~&Scheme: ~a~@
+          Userinfo: ~a~@
+          Host: ~a~@
+          Port: ~d~@
+          Path: ~a~@
+          Query: ~a~@
+          Fragment: ~a~%"
+          (uri-scheme u)
+          (uri-userinfo u)
+          (uri-host u)
+          (uri-port u)
+          (uri-path u)
+          (uri-query u)
+          (uri-fragment u))
   t)
 (defmethod print-object ((u uri) stream)
   (print-unreadable-object (u stream :type t) (uri-display u stream)))
 (defun no-amb (scheme-list leftover)
-  (or
-   (member
-    (coerce scheme-list 'string)
-    '("news" "tel" "fax" "mailto" "zos" "http" "https")
-    :test #'string-equal)
-   (not (car leftover))
-   (char= (car leftover) #\/)))
+  (or (member (coerce scheme-list 'string)
+              '("news" "tel" "fax" "mailto" "zos" "http" "https")
+              :test #'string-equal)
+      (not (car leftover))
+      (char= (car leftover) #\/)))
 (defun uri-parse (string)
   (let ((s-machine (scheme:make-machine (coerce string 'list))))
     (scheme:parse s-machine)
@@ -88,24 +83,21 @@
                                 (utils:evaluate (scheme:value s-machine)))))
               (uri:parse uri-machine)
               (if (uri:valid uri-machine)
-                  (make-uri
-                   (uri:scheme uri-machine)
-                   (uri:userinfo uri-machine)
-                   (uri:host uri-machine)
-                   (uri:port uri-machine)
-                   (uri:path uri-machine)
-                   (uri:query uri-machine)
-                   (uri:fragment uri-machine))))
+                  (make-uri (uri:scheme uri-machine)
+                            (uri:userinfo uri-machine)
+                            (uri:host uri-machine)
+                            (uri:port uri-machine)
+                            (uri:path uri-machine)
+                            (uri:query uri-machine)
+                            (uri:fragment uri-machine))))
             (let ((amb-machine (amb:make-machine
                                 (scheme:leftover s-machine)
                                 (utils:evaluate (scheme:value s-machine)))))
               (amb:parse amb-machine)
               (if (amb:valid amb-machine)
-                  (values-list (map
-                                'list
-                                #'make-amb-uri
-                                (amb:value amb-machine)))))))))
+                  (values-list (map 'list
+                                    #'make-amb-uri
+                                    (amb:value amb-machine)))))))))
 (defun uri-display (uri &optional (stream t))
-  (cond
-   ((null uri) (princ nil) t)
-   (t (display-uri uri stream))))
+  (cond ((null uri) (princ nil) t)
+        (t (display-uri uri stream))))
