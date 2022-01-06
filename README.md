@@ -22,8 +22,8 @@ It's important to note that uri-display does NOT check for URI validity.
 #
 
 ## How to use
-It's just necessary to load the file ['uri-parse.lisp'].  
-This file will compile and load each internal module of this library.  
+It's just necessary to compile and load the file ['uri-parse.lisp'].  
+This file will in turn compile and load each internal module of this library.  
 After two functions will be available:
 
 - uri-parse takes in input a string to parse and will return a uri-object if
