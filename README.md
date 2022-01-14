@@ -96,6 +96,42 @@ uri-parse and uri-display.
 The file [uri-parse] is just a System Definition Facility, Another System
 Definition Facility if you will, to compile and load all the library packages
 in the right order and all at once.
+#
+
+## Code statistics
+Total : 17 files,  708 codes, 31 comments, 29 blanks, all 768 lines
+
+### Languages
+| language | files | code | comment | blank | total |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Common Lisp | 16 | 611 | 31 | 16 | 658 |
+| Markdown | 1 | 97 | 0 | 13 | 110 |
+
+### Directories
+| path | files | code | comment | blank | total |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| . | 17 | 708 | 31 | 29 | 768 |
+
+### Files
+| filename | language | code | comment | blank | total |
+| :--- | :--- | ---: | ---: | ---: | ---: |
+| [README.md](/README.md) | Markdown | 97 | 0 | 13 | 110 |
+| [amb.lisp](/amb.lisp) | Common Lisp | 38 | 1 | 1 | 40 |
+| [authority.lisp](/authority.lisp) | Common Lisp | 48 | 1 | 1 | 50 |
+| [fragment.lisp](/fragment.lisp) | Common Lisp | 18 | 1 | 1 | 20 |
+| [gen-machine.lisp](/gen-machine.lisp) | Common Lisp | 41 | 1 | 1 | 43 |
+| [host.lisp](/host.lisp) | Common Lisp | 21 | 1 | 1 | 23 |
+| [interface.lisp](/interface.lisp) | Common Lisp | 103 | 1 | 1 | 105 |
+| [mailto.lisp](/mailto.lisp) | Common Lisp | 31 | 1 | 1 | 33 |
+| [path.lisp](/path.lisp) | Common Lisp | 23 | 1 | 1 | 25 |
+| [port.lisp](/port.lisp) | Common Lisp | 23 | 1 | 1 | 25 |
+| [query.lisp](/query.lisp) | Common Lisp | 20 | 1 | 1 | 22 |
+| [scheme.lisp](/scheme.lisp) | Common Lisp | 16 | 1 | 1 | 18 |
+| [uri-parse.lisp](/uri-parse.lisp) | Common Lisp | 30 | 16 | 1 | 47 |
+| [uri.lisp](/uri.lisp) | Common Lisp | 105 | 1 | 1 | 107 |
+| [userinfo.lisp](/userinfo.lisp) | Common Lisp | 18 | 1 | 1 | 20 |
+| [utils.lisp](/utils.lisp) | Common Lisp | 39 | 1 | 1 | 41 |
+| [zpath.lisp](/zpath.lisp) | Common Lisp | 37 | 1 | 1 | 39 |
 
 [RFC-3986]: https://datatracker.ietf.org/doc/html/rfc3986
 ['uri-parse.lisp']: ./uri-parse.lisp
